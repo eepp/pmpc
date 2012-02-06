@@ -1,0 +1,80 @@
+# this is a sample pmpc score, testing all features (not really a good song).
+# this is, of course, a comment.
+
+# samples per tick (controls speed without changing pitch)
+> samps_per_tick: 200
+
+# ticks per whole note
+> ticks_per_whole: 192
+
+# ticks to remove from a note duration when cut
+> cut_ticks: 1
+
+# generators for each track (one of {'saw', 'tri', 'sq'}), comma-delimited 
+> generators: tri, saw, sq
+
+# note durations:
+#   note			x (divide ticks per whole by x)
+#   dotted note			x. (divide ticks per whole by x and multiply by 1.5)
+#   tuplet note			x,y (divide ticks per whole by x and divide again by y)
+#
+#   whole			1
+#   triplet whole		1,3
+#   triplet half		2,3
+#   dotted half			2.
+#   half			2
+#   triplet quarter		4,3
+#   dotted quarter		4.
+#   quarter			4
+#   triplet eighth		8,3
+#   dotted eighth		8.
+#   eighth			8
+#   triplet sixteenth		16,3
+#   dotted sixteenth		16.
+#   sixteenth			16
+#   triplet sixteenth		32,3
+#   dotted thirty-second	32.
+#   thirty-second		32
+#   sixty-fourth		64.
+#   sixty-fourth		64
+#
+# add a + at the end of the note to cut it and automatically add a pause.
+
+# notes:
+#   C			c
+#   C#			C
+#   D			d
+#   D#			D
+#   E			e
+#   F			f
+#   F#			F
+#   G			g
+#   G#			G
+#   A			a
+#   A#			A
+#   B			b
+
+# tokens examples:
+#   C2=4		quarter C#2
+#   g3=8.		dotted eighth G3
+#   a4=4,3		triplet quarter A4
+#   D4=4.+		cut quarter dotted D#4
+#   f0-32		32 ticks F0
+#   /=6			sixth pause
+#   /-12		12 ticks pause
+
+
+# some intro
+c1-50 d1-50 e1-50 f1-50 g1-50           a1-50 /-100     c2-100
+c2-25 c3-50   c1-50   /-127	 /-120                 b2-20    A3-9
+D3=4 e3-80
+
+/-10 c2-10 c3-10                  a4-20 A4-25 A5-30
+D4-30 e2-80
+a0-200 A0-150 /-45 /-5 b0-100
+
+# some outro
+c2-50 d1-50 e1-50 f1-50 g1-50           a1-50 /-100     c2-100
+c3-25 c3-50 c1-50 /-127 /-120                 b2-20    A3-9
+D4-30 e3-80
+
