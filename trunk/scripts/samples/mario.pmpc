@@ -2,7 +2,7 @@
 # author:	Philippe Proulx <eepp.ca>
 # date:		2012/02/05
 
-> samps_per_tick: 150
+> samps_per_tick: 10
 > generators: noise32k, sq, sq, sq
 > ticks_per_whole: 192
 > cut_ticks: 2
