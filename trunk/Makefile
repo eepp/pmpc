@@ -28,7 +28,7 @@ OBJCOPY = avr-objcopy
 OBJDUMP = avr-objdump
 SIZE = avr-size
 PROG = avrdude
-PROGFLAGS = -c usbasp -p $(MCU) -e
+PROGFLAGS = -c usbasp -p $(MCU) -e -V
 RM = rm -f
 AR = avr-ar
 
