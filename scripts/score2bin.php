@@ -5,7 +5,7 @@
 	 * for usage. no error verification on arguments yet.
 	 *
 	 * author:	Philippe Proulx <eepp.ca>
-	 * date:	2012/02/05
+	 * date:	2012/03/17
 	 */
 	define('NOTE_TYPE_NORMAL', 0);
 	define('NOTE_TYPE_PAUSE', 1);
@@ -40,7 +40,7 @@
 						case 'generators':
 						$meta['generators'] = preg_split('/\\s*,\\s*/', trim($m[2]));
 						foreach ($meta['generators'] as $g) {
-							if (!in_array($g, array('tri', 'sq', 'saw'))) {
+							if (!in_array($g, array('tri', 'sq', 'saw', 'noise32k', 'noise93'))) {
 								error_exit(sprintf('parse error: unknown generator "%s"', $g), 2);
 							}
 						}

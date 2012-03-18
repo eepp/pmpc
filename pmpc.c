@@ -3,7 +3,7 @@
  * of the simple wave synthesis idea is based on work by François-Raymond Boyer
  * at École Polytechnique de Montréal.
  *
- * Copyright 2012 Philippe Proulx <eepp.ca>
+ * Copyright (c) 2012  Philippe Proulx <eepp.ca>
  *
  * This file is part of pmpc.
  *
@@ -38,15 +38,17 @@
 /* a track */
 struct track {
 	uint8_t* data;			/* track data (melody) */
+	uint8_t (*gen)(struct track* t); /* wave generator callback */
 	uint16_t data_pos;		/* position into track data */
 	uint16_t data_sz;		/* track data size */
 	uint16_t rem_samples;		/* remaining samples */
-	uint8_t (*gen)(struct track* t); /* wave generator callback */
 	uint16_t incr;			/* increment (specifies note/octave) */
 	uint16_t wave_pos;		/* position in wave */
-	uint8_t* pcm_data;		/* when generator is PCM */
+	uint16_t noise_word;		/* noise current value */
 	uint16_t pcm_sz;		/* PCM data size */
+	uint8_t* pcm_data;		/* when generator is PCM */
 	uint8_t flags;			/* status */
+	uint8_t note;			/* current note */
 };
 
 /* a couple of declarations */
@@ -54,6 +56,8 @@ struct track {
 static uint8_t gen_saw(struct track* t);
 static uint8_t gen_tri(struct track* t);
 static uint8_t gen_sq(struct track* t);
+static uint8_t gen_noise32k(struct track* t);
+static uint8_t gen_noise93(struct track* t);
 
 /* output buffer (a single sample) */
 static volatile uint8_t g_comp_next_sample = 0; /* should be mutexed */
@@ -70,7 +74,7 @@ static uint16_t g_incr [] = {
 };
 
 /* tracks */
-#include "test.pmpcb"
+#include "song.pmpcb"
 static struct track g_tracks [TRACKS_SZ];
 
 /**
@@ -87,6 +91,8 @@ static void init_tracks(void) {
 		g_tracks[i].data = g_tracks_datas[i];
 		g_tracks[i].data_sz = g_tracks_sizes[i];
 		g_tracks[i].gen = g_tracks_generators[i];
+		g_tracks[i].note = 0;
+		g_tracks[i].noise_word = 1;
 	}
 }
 
@@ -220,6 +226,54 @@ static uint8_t gen_sq(struct track* t) {
 }
 
 /**
+ * generates a noise sample from a 93 b pool.
+ *
+ * @param t	track
+ * @return	sample
+ */
+static uint8_t gen_noise93(struct track* t) {
+	uint16_t nw = t->noise_word;
+	uint8_t x;
+	uint8_t bit;
+	
+	++t->wave_pos;
+	if (t->wave_pos > t->note) {
+		for (x = 0; x < 8; ++x) {
+			bit = ((nw >> 14) ^ (nw >> 8)) & 1;
+			nw = (nw << 1) | bit;
+		}
+		t->noise_word = nw;
+		t->wave_pos = 0;
+	}
+	
+	return nw & 0xff;
+}
+
+/**
+ * generates a noise sample from a 32 kib pool.
+ *
+ * @param t	track
+ * @return	sample
+ */
+static uint8_t gen_noise32k(struct track* t) {
+	uint16_t nw = t->noise_word;
+	uint8_t x;
+	uint8_t bit;
+	
+	++t->wave_pos;
+	if (t->wave_pos > t->note) {
+		for (x = 0; x < 8; ++x) {
+			bit = ((nw >> 14) ^ (nw >> 13)) & 1;
+			nw = (nw << 1) | bit;
+		}
+		t->noise_word = nw;
+		t->wave_pos = 0;
+	}
+	
+	return nw & 0xff;
+}
+
+/**
  * rewinds a track.
  *
  * @param t	track
@@ -261,6 +315,7 @@ uint8_t track_next_sample(struct track* t) {
 				} else {
 					/* real note */
 					t->incr = g_incr[note];
+					t->note = note;
 					ticks = pgm_read_byte(&t->data[tdp]);
 					++tdp;
 				}

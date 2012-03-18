@@ -10,7 +10,7 @@
 # ticks to remove from a note duration when cut
 > cut_ticks: 1
 
-# generators for each track (one of {'saw', 'tri', 'sq'}), comma-delimited 
+# generators for each track (one of {'saw', 'tri', 'sq', 'noise32k', 'noise93'}), comma-delimited 
 > generators: tri, saw, sq
 
 # note durations:
