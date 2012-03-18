@@ -3,7 +3,7 @@
 # date:		2012/02/05
 
 > samps_per_tick: 150
-> generators: noise32k, sq, sq, sq
+> generators: noise32k, tri, sq, sq
 > ticks_per_whole: 192
 > cut_ticks: 2
 

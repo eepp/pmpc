@@ -190,12 +190,10 @@ static uint8_t gen_tri(struct track* t) {
 	uint8_t r;
 	
 	w = t->wave_pos;
-	if (w < 0x4000) {
-		r = (w + 0x8000) >> 8;
-	} else if (w < 0xc000) {
-		r = (0xffff - w) >> 8;
+	if (w < 0x8000) {
+		r = (w * 2) >> 8;
 	} else {
-		r = (w - 0x8000) >> 8;
+		r = (0x10000 - 2 * (w - 0x8000)) >> 8;
 	}
 	t->wave_pos += t->incr;
 	
@@ -214,7 +212,7 @@ static uint8_t gen_sq(struct track* t) {
 	
 	w = t->wave_pos & 0x8000;
 	
-	/* following values are there to match the triangle and sawtooth RMS */
+	/* following values are there to match the triangle/sawtooth RMS */
 	if (w != 0) {
 		r = 175;
 	} else {
