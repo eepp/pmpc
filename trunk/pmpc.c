@@ -292,7 +292,7 @@ static __attribute__((always_inline)) void rewind_track(struct track* t) {
  */
 static __attribute__((always_inline))
 uint8_t track_next_sample(struct track* t) {
-	uint8_t samp = 0;
+	uint8_t samp = 0x80;
 	uint8_t note;
 	uint16_t ticks;
 	uint16_t tdp;
